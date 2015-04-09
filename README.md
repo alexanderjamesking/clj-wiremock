@@ -1,5 +1,7 @@
 # clj-wiremock
 
+[![Build Status](https://travis-ci.org/alexanderjamesking/clj-wiremock.svg)](https://travis-ci.org/alexanderjamesking/clj-wiremock)
+
 TODO: write a Clojure library that wraps wiremock
 
 Example using wiremock in the REPL (lein repl)
