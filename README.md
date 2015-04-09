@@ -6,25 +6,35 @@ Example using wiremock in the REPL (lein repl)
 ```
 (import com.github.tomakehurst.wiremock.WireMockServer)
 (import com.github.tomakehurst.wiremock.core.WireMockConfiguration)
+(import com.github.tomakehurst.wiremock.client.WireMock)
 
 (def wiremock-config (.port (new WireMockConfiguration) 22222))
 (def wiremock-config (new WireMockConfiguration))
 
 (def wiremock-server (new com.github.tomakehurst.wiremock.WireMockServer wiremock-config))
 (.start wiremock-server)
-
-(import com.github.tomakehurst.wiremock.client.WireMock)
-
 (WireMock/configureFor "localhost" 22222)
 
 
-(WireMock/stubFor 
+(defn GET [x] (WireMock/get x))
+(defn urlEqualTo [x] (WireMock/urlEqualTo x))
+(defn stubFor [x] (WireMock/stubFor x))
+(defn aResponse [] (WireMock/aResponse))
+
+(stubFor 
   (.willReturn 
-    (WireMock/get (WireMock/urlEqualTo "/foo")) 
+    (GET (urlEqualTo "/hello")) 
+    (.withBody 
+      (.withStatus (aResponse) 200) 
+      "Hello World")))
+
+
+(stubFor 
+  (.willReturn 
+    (get (urlEqualTo "/hello")) 
     (.withBody 
       (.withStatus (WireMock/aResponse) 200) 
       "Hello World")))
-
 
 (.stop wiremock-server)
 ```
