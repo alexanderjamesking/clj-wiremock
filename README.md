@@ -5,29 +5,29 @@
 A Clojure library that wraps wiremock, very much a work in progress - don't use this just yet! @superaking
 
 Create a wiremock server on port 11111
-```
+```clojure
 (def server (wiremock-server (wiremock-config { :port 11111 })))
 ```
 
 Starting and stopping the server
-```
+```clojure
 (start server)
 (stop server)
 ```
 
 Configure the WireMock client to post to 11111
-```
+```clojure
 (configure-for "localhost" 11111)
 ```
 
 Stub an endpoint using map syntax
-```
+```clojure
 (stub-for (will-return (GET (url-equal-to "/hello")) 
                        (response { :status 200 :body "Hello World" })))
 ```
 
 Stub an endpoint using the builder
-```
+```clojure
 (stub-for (will-return (GET (url-equal-to "/hello-world")) 
                        (-> (response) 
                            (with-body "Hello World")
