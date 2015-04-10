@@ -7,7 +7,12 @@
 (defn listAllStubMappings [] (WireMock/listAllStubMappings))
 (defn get-all-mappings [] (parse-string (.toString (.getMappings (listAllStubMappings))) true))
 
-(defn wiremock-config [] (new WireMockConfiguration))
+(defn wiremock-config 
+  ([] (new WireMockConfiguration))
+  ([config-map] 
+    (let [config (new WireMockConfiguration)]
+    (when-let [port (:port config-map)] (.port config port))  
+    config)))
 
 (defn wiremock-server 
   [config] 

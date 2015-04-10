@@ -4,9 +4,7 @@
             [cheshire.core :refer :all]))
 
 (def server 
-  (wiremock-server 
-    (-> (wiremock-config)
-        (. port 22222 ))))
+  (wiremock-server (wiremock-config { :port 22222 })))
 
 (use-fixtures :once 
   (fn [f]
@@ -45,6 +43,14 @@
     (is (= 200 (-> m :response :status)))
     (is (= "text/plain" (-> m :response :headers :Content-Type)))
     (is (= "Hello World" (-> m :response :body)))))
+
+(defn string->integer 
+  ([s] (string->integer s 10))
+  ([s base] (Integer/parseInt s base)))
+
+(deftest building-config-from-map
+  (let [c (wiremock-config { :port 12345 })]
+    (is (= 12345 (.portNumber c)))))
 
 
 
