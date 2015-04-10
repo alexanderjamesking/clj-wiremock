@@ -5,12 +5,19 @@
            com.github.tomakehurst.wiremock.client.WireMock))
 
 (defn listAllStubMappings [] (WireMock/listAllStubMappings))
-(defn get-all-mappings []
-  (parse-string (.toString (.getMappings (listAllStubMappings))) true))
+(defn get-all-mappings [] (parse-string (.toString (.getMappings (listAllStubMappings))) true))
 
-(defn reset-mappings [wiremock-server] (.resetMappings wiremock-server))
-(defn start [wiremock-server] (.start wiremock-server))
-(defn stop [wiremock-server] (.stop wiremock-server))
+(defn wiremock-config [] (new WireMockConfiguration))
+
+(defn wiremock-server 
+  [config] 
+  (new com.github.tomakehurst.wiremock.WireMockServer config))
+
+(defn reset-mappings [server] (.resetMappings server))
+(defn start [server] (.start server))
+(defn stop [server] (.stop server))
+
+(defn configure-for [host port](WireMock/configureFor host port))
 
 (defn GET [x] (WireMock/get x))
 
@@ -23,3 +30,4 @@
 (defn will-return [req res] (.willReturn req res))
 (defn with-body [response-builder body] (.withBody response-builder body))
 (defn with-status [response-builder status] (.withStatus response-builder status))
+(defn with-header [response-builder k v] (.withHeader response-builder k v))
