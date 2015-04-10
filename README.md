@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/alexanderjamesking/clj-wiremock.svg)](https://travis-ci.org/alexanderjamesking/clj-wiremock)
 
-A Clojure library that wraps wiremock, very much a work in progress - don't use this just yet! @superaking
+A Clojure library that wraps [wiremock](https://github.com/tomakehurst/wiremock), very much a work in progress - don't use this just yet! [@superaking](https://twitter.com/superaking)
 
 Create a wiremock server on port 11111
 ```clojure
