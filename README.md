@@ -1,6 +1,7 @@
 # clj-wiremock
 
-[![Build Status](https://travis-ci.org/alexanderjamesking/clj-wiremock.svg)](https://travis-ci.org/alexanderjamesking/clj-wiremock)
+[![Build Status](https://travis-ci.org/alexanderjamesking/clj-wiremock.svg)](https://travis-ci.org/alexanderjamesking/clj-wiremock) 
+[![Clojars Project](http://clojars.org/clj-wiremock/latest-version.svg)](http://clojars.org/clj-wiremock)
 
 A Clojure library that wraps [wiremock](https://github.com/tomakehurst/wiremock), very much a work in progress - don't use this just yet! [@superaking](https://twitter.com/superaking)
 
