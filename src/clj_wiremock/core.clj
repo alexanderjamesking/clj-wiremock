@@ -29,7 +29,7 @@
 (defn url-equal-to [url] (WireMock/urlEqualTo url))
 (defn url-matching [url] (WireMock/urlMatching url))
 (defn url-path-equal-to [url] (WireMock/urlPathEqualTo url))
-(defn stub-for [x] (WireMock/stubFor x))
+(defn stub-for [mapping-builder] (WireMock/stubFor mapping-builder))
 (defn response 
   ([] 
     (WireMock/aResponse))
