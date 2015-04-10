@@ -30,7 +30,17 @@
 (defn url-matching [url] (WireMock/urlMatching url))
 (defn url-path-equal-to [url] (WireMock/urlPathEqualTo url))
 (defn stub-for [x] (WireMock/stubFor x))
-(defn create-response [] (WireMock/aResponse))
+(defn create-response 
+  ([] 
+    (WireMock/aResponse))
+  ([config-map] 
+    (let [response (WireMock/aResponse)]
+      (when-let [s (:status config-map)] (.withStatus response s))
+      (when-let [b (:body config-map)] (.withBody response b))
+      (when-let [headers (:headers config-map)] 
+        (doseq [h headers]
+          (.withHeader response (key h) (val h))))
+      response)))
 
 (defn will-return [req res] (.willReturn req res))
 (defn with-body [response-builder body] (.withBody response-builder body))

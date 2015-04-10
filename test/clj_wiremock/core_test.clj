@@ -52,5 +52,15 @@
   (let [c (wiremock-config { :port 12345 })]
     (is (= 12345 (.portNumber c)))))
 
-
-
+(deftest building-response-from-map
+  (let [m (mapping (GET (url-equal-to "/hello")) 
+                   (create-response {
+                      :status 202
+                      :body "Accepted"
+                      :headers {
+                        "Content-Type" "application/json"
+                      }
+                    }))]
+    (is (= 202 (-> m :response :status)))
+    (is (= "Accepted" (-> m :response :body)))
+    (is (= "application/json" (-> m :response :headers :Content-Type)))))
