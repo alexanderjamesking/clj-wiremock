@@ -5,7 +5,9 @@
 A Clojure library that wraps wiremock, very much a work in progress - don't use this just yet! @superaking
 
 Create a wiremock server on port 11111
-```(def server (wiremock-server (wiremock-config { :port 11111 })))```
+```
+(def server (wiremock-server (wiremock-config { :port 11111 })))
+```
 
 Starting and stopping the server
 ```
