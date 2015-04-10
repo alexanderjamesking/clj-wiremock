@@ -23,7 +23,7 @@
 
 (deftest mappings-are-built-correctly
   (let [m (mapping (GET (url-equal-to "/hello")) 
-                   (-> (create-response)
+                   (-> (response)
                        (with-body "Hello World")
                        (with-status 200)))]
     (is (= "/hello" (-> m :request :url)))
@@ -33,7 +33,7 @@
 
 (deftest mappings-posted-to-wiremock
   (stub-for (will-return (GET (url-equal-to "/hello-world")) 
-                         (-> (create-response) 
+                         (-> (response) 
                              (with-body "Hello World")
                              (with-header "Content-Type" "text/plain")
                              (with-status 200))))
@@ -54,7 +54,7 @@
 
 (deftest building-response-from-map
   (let [m (mapping (GET (url-equal-to "/hello")) 
-                   (create-response {
+                   (response {
                       :status 202
                       :body "Accepted"
                       :headers {
