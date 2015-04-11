@@ -8,7 +8,7 @@ A Clojure library that wraps [wiremock](https://github.com/tomakehurst/wiremock)
 [![Clojars Project](http://clojars.org/clj-wiremock/latest-version.svg)](http://clojars.org/clj-wiremock)
 
 
-Hello World in the REPL
+### Hello World in the REPL
 ```clojure
 (require '[clj-wiremock.core :refer :all])
 
@@ -31,7 +31,7 @@ Hello World in the REPL
 (stop server)
 ```
 
-
+### Basic Usage
 Create a wiremock server on port 11111
 ```clojure
 (def server (wiremock-server (wiremock-config { :port 11111 })))
