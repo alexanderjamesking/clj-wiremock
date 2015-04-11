@@ -58,16 +58,12 @@
             :trust-store-password "sometruststorepass"
             :need-client-auth true })
         https-settings (.httpsSettings c)]
-
-(println https-settings)
     (is (= 9999 (.port https-settings)))
     (is (= "/some/path" (.keyStorePath https-settings)))
     (is (= "somepass" (.keyStorePassword https-settings)))
     (is (= "/some/trust/store/path" (.trustStorePath https-settings)))
     (is (= "sometruststorepass" (.trustStorePassword https-settings)))
     (is (= true (.needClientAuth https-settings)))
-
-    (is (= 12345 (.portNumber c)))
     (is (= 12345 (.portNumber c)))))
 
 (deftest building-response-from-map
@@ -82,5 +78,3 @@
     (is (= 202 (-> m :response :status)))
     (is (= "Accepted" (-> m :response :body)))
     (is (= "application/json" (-> m :response :headers :Content-Type)))))
-
-

@@ -4,10 +4,8 @@
            com.github.tomakehurst.wiremock.core.WireMockConfiguration
            com.github.tomakehurst.wiremock.client.WireMock))
 
-(defn listAllStubMappings [] (WireMock/listAllStubMappings))
-(defn get-all-mappings [] (parse-string (.toString (.getMappings (listAllStubMappings))) true))
-
 (defn wiremock-config 
+  "Creates a new instance of WireMockConfiguration"
   ([] (new WireMockConfiguration))
   ([config-map] 
     (let [config (new WireMockConfiguration)]
@@ -21,22 +19,58 @@
       config)))
 
 (defn wiremock-server 
-  [config] 
-  (new com.github.tomakehurst.wiremock.WireMockServer config))
+  "Create a new instance of WireMockServer"
+  ([] (new WireMockServer))
+  ([config] (new WireMockServer config)))
 
-(defn reset-mappings [server] (.resetMappings server))
-(defn start [server] (.start server))
-(defn stop [server] (.stop server))
+(defn reset-mappings 
+  "Removes all stub mappings and deletes the request log"
+  [server] 
+  (.resetMappings server))
+
+(defn start 
+  "Starts the WireMockServer"
+  [server] 
+  (.start server))
+
+(defn stop 
+  "Stops the WireMockServer"
+  [server] 
+  (.stop server))
 
 ; WireMock Client
 
-(defn configure-for [host port](WireMock/configureFor host port))
+(defn configure-for 
+  "Configures the WireMock client to use host and port provided"
+  [host port]
+  (WireMock/configureFor host port))
+
+(defn get-all-mappings 
+  "Calls server to returns all mappings, server must be running"
+  [] 
+  (parse-string (.toString (.getMappings (WireMock/listAllStubMappings))) true))
+
 
 ; (UrlMatchingStrategy) -> MappingBuilder
-(defn GET [x] (WireMock/get x))
-(defn POST [x] (WireMock/post x))
-(defn PUT [x] (WireMock/put x))
-(defn DELETE [x] (WireMock/delete x))
+(defn GET 
+  "MappingBuilder with a GET request for the UrlMatchingStrategy"
+  [url-matching-strategy] 
+  (WireMock/get url-matching-strategy))
+
+(defn POST 
+  "MappingBuilder with a POST request for the UrlMatchingStrategy"
+  [url-matching-strategy] 
+  (WireMock/post url-matching-strategy))
+
+(defn PUT 
+  "MappingBuilder with a PUT request for the UrlMatchingStrategy"
+  [url-matching-strategy] 
+  (WireMock/put url-matching-strategy))
+
+(defn DELETE 
+  "MappingBuilder with a DELETE request for the UrlMatchingStrategy"
+  [url-matching-strategy] 
+  (WireMock/delete url-matching-strategy))
 
 ; (defn PATCH [x] (WireMock/patch x))
 ; (defn HEAD [x] (WireMock/head x))
@@ -45,11 +79,23 @@
 ; (defn ANY [x] (WireMock/any x))
 
 ; (String) -> UrlMatchingStrategy
-(defn url-equal-to [url] (WireMock/urlEqualTo url))
-(defn url-matching [url] (WireMock/urlMatching url))
-(defn url-path-equal-to [url] (WireMock/urlPathEqualTo url))
+(defn url-equal-to 
+  "UrlMatchingStrategy for the url (String) exactly including any query parameters"
+  [url] 
+  (WireMock/urlEqualTo url))
+
+(defn url-matching 
+  "UrlMatchingStrategy for the pattern (String) e.g. '/thing/matching/[0-9]+'"
+  [pattern] 
+  (WireMock/urlMatching pattern))
+
+(defn url-path-equal-to 
+  "UrlMatchingStrategy for the path of the url (String) only, query parameters are ignored"
+  [url] 
+  (WireMock/urlPathEqualTo url))
 
 ; (String) -> ValueMatchingStrategy
+; TODO: wrap the following methods
 ;equalTo
 ;equalToJson
 ;equalToJson (String value, JSONCompareMode jsonCompareMode) -> ValueMatchingStrategy
