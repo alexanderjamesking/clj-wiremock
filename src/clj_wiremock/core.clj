@@ -38,8 +38,6 @@
   [server] 
   (.stop server))
 
-; WireMock Client
-
 (defn configure-for 
   "Configures the WireMock client to use host and port provided"
   [host port]
@@ -50,8 +48,6 @@
   [] 
   (parse-string (.toString (.getMappings (WireMock/listAllStubMappings))) true))
 
-
-; (UrlMatchingStrategy) -> MappingBuilder
 (defn GET 
   "MappingBuilder with a GET request for the UrlMatchingStrategy"
   [url-matching-strategy] 
@@ -72,13 +68,12 @@
   [url-matching-strategy] 
   (WireMock/delete url-matching-strategy))
 
-; (defn PATCH [x] (WireMock/patch x))
-; (defn HEAD [x] (WireMock/head x))
-; (defn OPTIONS [x] (WireMock/options x))
-; (defn TRACE [x] (WireMock/trace x))
-; (defn ANY [x] (WireMock/any x))
+(defn PATCH [x] (WireMock/patch x))
+(defn HEAD [x] (WireMock/head x))
+(defn OPTIONS [x] (WireMock/options x))
+(defn TRACE [x] (WireMock/trace x))
+(defn ANY [x] (WireMock/any x))
 
-; (String) -> UrlMatchingStrategy
 (defn url-equal-to 
   "UrlMatchingStrategy for the url (String) exactly including any query parameters"
   [url] 
@@ -94,40 +89,98 @@
   [url] 
   (WireMock/urlPathEqualTo url))
 
-; (String) -> ValueMatchingStrategy
-; TODO: wrap the following methods
-;equalTo
-;equalToJson
-;equalToJson (String value, JSONCompareMode jsonCompareMode) -> ValueMatchingStrategy
-;equalToXml 
-;matchingXPath
-;containing
-;matching
-;notMatching
-;matchingJsonPath
+(defn equal-to 
+  "ValueMatchingStrategy for the value (String)"
+  [value] 
+  (WireMock/equalTo value))
 
-(defn stub-for [mapping-builder] (WireMock/stubFor mapping-builder))
+(defn equal-to-json 
+  "ValueMatchingStrategy matching the JSON (String) semantically 
+  see http://wiremock.org/stubbing.html#json-body-matching"
+  ([value] 
+    (WireMock/equalToJson value))
+  ([value json-compare-mode]
+    (WireMock/equalToJson value json-compare-mode)))
+
+(defn equal-to-xml 
+  "ValueMatchingStrategy for the XML (String)"
+  [value] 
+  (WireMock/equalToXml value))  
+
+(defn matching-xpath
+  "ValueMatchingStrategy for the XPath (String)
+  see http://wiremock.org/stubbing.html#xpath-body-matching"
+  [value] 
+  (WireMock/matchingXPath value))  
+
+(defn containing
+  "ValueMatchingStrategy matching anything containing the value (String)"
+  [value]
+  (WireMock/containing value))
+
+(defn matching
+  "ValueMatchingStrategy matching the value (String) e.g. 'text/.*'"
+  [value]
+  (WireMock/matching value))
+
+(defn not-matching
+  "ValueMatchingStrategy not matching the value (String) e.g. 'text/.*'"
+  [value]
+  (WireMock/notMatching value))
+
+(defn matching-json-path
+  "ValueMatchingStrategy matching the json-path (String) e.g. '$.things[$(@.name == 'RequiredThing')]'"
+  [json-path]
+  (WireMock/matchingJsonPath json-path))
+
+(defn stub-for 
+  "Creates the MappingBuilder on the running wiremock-server"
+  [mapping-builder] 
+  (WireMock/stubFor mapping-builder))
+
+(defn will-return 
+  "Configures the request (MappingBuilder) to return the response (ResponseDefinitionBuilder)"
+  [request response] 
+  (.willReturn request response))
+
+(defn with-body 
+  "Configures the response-builder to return the body (String)"
+  [response-builder body] 
+  (.withBody response-builder body))
+
+(defn with-status 
+  "Configures the response-builder to return the status (int)"
+  [response-builder status]
+  (.withStatus response-builder status))
+
+(defn with-header 
+  "Configures the response-builder to return the header key (String) and value (String)"
+  [response-builder k v] 
+  (.withHeader response-builder k v))
+
+(defn with-body-file [response-builder x] 
+  (.withBodyFile response-builder x))
+
+(defn with-fixed-delay [response-builder x] 
+  (.withFixedDelay response-builder (int x)))
+
+(defn proxied-from [response-builder x] 
+  (.proxiedFrom response-builder x))
+
+(defn with-transformers [response-builder & transformers] 
+  (.withTransformers response-builder transformers))
+
+(defn with-fault [response-builder fault] 
+  (.withFault response-builder fault))
+
 (defn response 
+  "Creates a ResponseDefinitionBuilder"
   ([] (WireMock/aResponse))
   ([config-map] 
     (let [response (WireMock/aResponse)]
-      (when-let [s (:status config-map)] (.withStatus response s))
-      (when-let [b (:body config-map)] (.withBody response b))
+      (when-let [s (:status config-map)] (with-status response s))
+      (when-let [b (:body config-map)] (with-body response b))
       (when-let [headers (:headers config-map)] 
         (doseq [h headers]
           (.withHeader response (key h) (val h))))
       response)))
-
-; ResponseDefinitionBuilder
-; status
-; headers
-; bodyContent
-; bodyFileName
-; fixedDelayMilliseconds
-; proxyBaseUrl
-(defn will-return [req res] (.willReturn req res))
-(defn with-body [response-builder body] (.withBody response-builder body))
-(defn with-status [response-builder status] (.withStatus response-builder status))
-(defn with-header [response-builder k v] (.withHeader response-builder k v))
-
-
