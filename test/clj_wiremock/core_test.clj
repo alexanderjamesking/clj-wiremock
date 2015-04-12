@@ -1,13 +1,10 @@
 (ns clj-wiremock.core-test
   (:require [clojure.test :refer [deftest use-fixtures is]]
-            [clj-wiremock.core :refer [config server start stop reset]]
+            [clj-wiremock.core :refer [config server start stop reset stub]]
             [clj-http.client :as client]))
 
 ; create a server on the default port (8080)
 (def wiremock-server (server))
-
-; wrap the stub method to point to our server
-(defn stub [body] (clj-wiremock.core/stub "http://localhost:8080" body))
 
 ; start the server at the start of the test suite, stop when done
 (use-fixtures :once (fn [test-suite] (start wiremock-server) (test-suite) (stop wiremock-server)))

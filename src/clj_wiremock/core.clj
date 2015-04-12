@@ -38,6 +38,11 @@
   [server] 
   (.resetMappings server))
 
-(defn stub 
-  [server-base-url body] 
+(defn- create-stub [server-base-url body]
   (client/post (str server-base-url "/__admin/mappings/new") { :body (generate-string body) }))
+
+(defn stub 
+  ([body]
+    (create-stub "http://localhost:8080" body))
+  ([server-base-url body] 
+    (create-stub server-base-url body)))
