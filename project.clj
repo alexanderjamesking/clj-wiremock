@@ -1,4 +1,4 @@
-(defproject clj-wiremock "0.2.0"
+(defproject clj-wiremock "0.3.0"
   :description "A clojure wrapper around wiremock"
   :url "https://github.com/alexanderjamesking/clj-wiremock"
   :license {:name "Eclipse Public License"
