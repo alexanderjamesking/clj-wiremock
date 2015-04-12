@@ -1,80 +1,49 @@
 (ns clj-wiremock.core-test
-  (:require [clojure.test :refer :all]
-            [clj-wiremock.core :refer :all]
-            [cheshire.core :refer :all]))
+  (:require [clojure.test :refer [deftest use-fixtures is]]
+            [clj-wiremock.core :refer [config server start stop reset]]
+            [clj-http.client :as client]))
 
-(def server 
-  (wiremock-server (wiremock-config { :port 22222 })))
+; create a server on the default port (8080)
+(def wiremock-server (server))
 
-(use-fixtures :once 
-  (fn [f]
-    (configure-for "localhost" 22222)
-    (start server)
-    (f)
-    (stop server)))
- 
-(use-fixtures :each 
-  (fn [f]
-    (reset-mappings server)
-    (f)))
+; wrap the stub method to point to our server
+(defn stub [body] (clj-wiremock.core/stub "http://localhost:8080" body))
 
-(defn mapping [req res]
-  (parse-string (.toString (.build (.willReturn req res))) true))
+; start the server at the start of the test suite, stop when done
+(use-fixtures :once (fn [test-suite] (start wiremock-server) (test-suite) (stop wiremock-server)))
 
-(deftest mappings-are-built-correctly
-  (let [m (mapping (GET (url-equal-to "/hello")) 
-                   (-> (response)
-                       (with-body "Hello World")
-                       (with-status 200)))]
-    (is (= "/hello" (-> m :request :url)))
-    (is (= "GET" (-> m :request :method)))
-    (is (= 200 (-> m :response :status)))
-    (is (= "Hello World" (-> m :response :body)))))
+; reset mappings before each test 
+(use-fixtures :each (fn [test-to-run] (reset wiremock-server) (test-to-run)))
 
-(deftest mappings-posted-to-wiremock
-  (stub-for (will-return (GET (url-equal-to "/hello-world")) 
-                         (-> (response) 
-                             (with-body "Hello World")
-                             (with-header "Content-Type" "text/plain")
-                             (with-status 200))))
-  (let [m (first (get-all-mappings))]
-    (is (= "/hello-world" (-> m :request :url)))
-    (is (= "GET" (-> m :request :method)))
-    (is (= 200 (-> m :response :status)))
-    (is (= "text/plain" (-> m :response :headers :Content-Type)))
-    (is (= "Hello World" (-> m :response :body)))))
-
-(defn string->integer 
-  ([s] (string->integer s 10))
-  ([s base] (Integer/parseInt s base)))
-
-(deftest building-config-from-map
-  (let [c (wiremock-config { 
-            :port 12345
-            :https-port 9999
-            :keystore-path "/some/path"
-            :keystore-password "somepass"
-            :trust-store-path "/some/trust/store/path"
-            :trust-store-password "sometruststorepass"
-            :need-client-auth true })
-        https-settings (.httpsSettings c)]
-    (is (= 9999 (.port https-settings)))
-    (is (= "/some/path" (.keyStorePath https-settings)))
-    (is (= "somepass" (.keyStorePassword https-settings)))
-    (is (= "/some/trust/store/path" (.trustStorePath https-settings)))
-    (is (= "sometruststorepass" (.trustStorePassword https-settings)))
-    (is (= true (.needClientAuth https-settings)))
+(deftest build-config-from-map
+  (let [c (config { :port 12345
+                    :https-port 9999
+                    :keystore-path "/some/path"
+                    :keystore-password "somepass"
+                    :trust-store-path "/some/trust/store/path"
+                    :trust-store-password "sometruststorepass"
+                    :need-client-auth true })
+        hs (.httpsSettings c)]
+    (is (= 9999 (.port hs)))
+    (is (= "/some/path" (.keyStorePath hs)))
+    (is (= "somepass" (.keyStorePassword hs)))
+    (is (= "/some/trust/store/path" (.trustStorePath hs)))
+    (is (= "sometruststorepass" (.trustStorePassword hs)))
+    (is (= true (.needClientAuth hs)))
     (is (= 12345 (.portNumber c)))))
 
-(deftest building-response-from-map
-  (let [m (mapping (GET (url-equal-to "/hello")) 
-                   (response {
-                      :status 202
-                      :body "Accepted"
-                      :headers {
-                        "Content-Type" "application/json"
-                      }
-                    }))]
-    (is (= 202 (-> m :response :status)))
-    (is (= "Accepted" (-> m :response :body)))
-    (is (= "application/json" (-> m :response :headers :Content-Type)))))
+(deftest http-get
+  (stub { :request { :method "GET" :url "/hello"} 
+          :response { :status 200 :body "Hello World"}})
+  (let [r (client/get "http://localhost:8080/hello")]
+    (is (= 200 (:status r)))
+    (is (= "Hello World" (:body r)))))
+
+(deftest http-post
+  (stub { :request { :method "POST" 
+                     :url "/submit" 
+                     :bodyPatterns [ { :equalTo "expected-body"}] } 
+          :response { :status 201 :body "Created"}})
+  (let [r (client/post "http://localhost:8080/submit" { :body "expected-body"})]
+    (is (= 201 (:status r)))
+    (is (= "Created" (:body r)))))

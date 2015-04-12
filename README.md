@@ -54,7 +54,7 @@ Stub an endpoint using map syntax
                        (response { :status 200 :body "Hello World" })))
 ```
 
-Stub an endpoint using the builder
+Stub an endpoint using the builders with the thread first macro
 ```clojure
 (stub-for (will-return (GET (url-equal-to "/hello-world")) 
                        (-> (response) 
