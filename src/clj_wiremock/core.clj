@@ -38,19 +38,21 @@
   [server] 
   (.resetMappings server))
 
-(defn- create-stub [server-base-url body]
-  (client/post (str server-base-url "/__admin/mappings/new") { :body (generate-string body) }))
+(defn- admin-post [endpoint body & [base-url]]
+  (let [base-url (or base-url "http://localhost:8080")
+        admin-url (str base-url "/__admin/" endpoint)
+        content-to-post { :body (generate-string body) }
+        response (client/post admin-url content-to-post)]
+    (parse-string (:body response) true)))
+
+(defn count-requests
+  ([body] (:count (admin-post "requests/count" body)))
+  ([body server-base-url] (:count (admin-post "requests/count" body server-base-url))))
+
+(defn find-requests
+  ([body] (:requests (admin-post "requests/find" body)))
+  ([body server-base-url] (:requests (admin-post "requests/find" body server-base-url))))
 
 (defn stub 
-  ([body]
-    (create-stub "http://localhost:8080" body))
-  ([server-base-url body] 
-    (create-stub server-base-url body)))
-
-
-
-(defn count-requests [body]
-  (let [admin-url (str "http://localhost:8080" "/__admin/requests/count")
-        response (:body (client/post admin-url { :body (generate-string body) }))]
-    (:count (parse-string response true))))
-
+  ([body] (admin-post "mappings/new" body))
+  ([body server-base-url] (admin-post "mappings/new" body server-base-url)))
