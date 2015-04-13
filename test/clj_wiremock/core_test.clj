@@ -1,6 +1,6 @@
 (ns clj-wiremock.core-test
   (:require [clojure.test :refer [deftest use-fixtures is]]
-            [clj-wiremock.core :refer [config server start stop reset stub]]
+            [clj-wiremock.core :refer [config server start stop reset stub count-requests]]
             [clj-http.client :as client]))
 
 ; create a server on the default port (8080)
@@ -44,3 +44,13 @@
   (let [r (client/post "http://localhost:8080/submit" { :body "expected-body"})]
     (is (= 201 (:status r)))
     (is (= "Created" (:body r)))))
+
+(deftest test-count-requests
+  (stub { :request { :method "GET" :url "/hello"} 
+          :response { :status 200 :body "Hello World"}})
+  (client/get "http://localhost:8080/hello")
+  (is (= 1 (count-requests { :method "GET" :url "/hello"})))
+  (client/get "http://localhost:8080/hello")
+  (client/get "http://localhost:8080/hello")
+  (is (= 3 (count-requests { :method "GET" :url "/hello"}))))
+

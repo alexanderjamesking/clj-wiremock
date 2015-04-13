@@ -1,5 +1,5 @@
 (ns clj-wiremock.core
-  (:require [cheshire.core :refer [generate-string]]
+  (:require [cheshire.core :refer [generate-string parse-string]]
             [clj-http.client :as client])
   (:import com.github.tomakehurst.wiremock.WireMockServer
            com.github.tomakehurst.wiremock.core.WireMockConfiguration))
@@ -46,3 +46,11 @@
     (create-stub "http://localhost:8080" body))
   ([server-base-url body] 
     (create-stub server-base-url body)))
+
+
+
+(defn count-requests [body]
+  (let [admin-url (str "http://localhost:8080" "/__admin/requests/count")
+        response (:body (client/post admin-url { :body (generate-string body) }))]
+    (:count (parse-string response true))))
+
