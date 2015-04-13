@@ -45,14 +45,11 @@
         response (client/post admin-url content-to-post)]
     (parse-string (:body response) true)))
 
-(defn count-requests
-  ([body] (:count (admin-post "requests/count" body)))
-  ([body server-base-url] (:count (admin-post "requests/count" body server-base-url))))
+(defn count-requests [body & [base-url]]  
+  (:count (admin-post "requests/count" body base-url)))
 
-(defn find-requests
-  ([body] (:requests (admin-post "requests/find" body)))
-  ([body server-base-url] (:requests (admin-post "requests/find" body server-base-url))))
+(defn find-requests [body & [base-url]] 
+  (:requests (admin-post "requests/find" body base-url)))
 
-(defn stub 
-  ([body] (admin-post "mappings/new" body))
-  ([body server-base-url] (admin-post "mappings/new" body server-base-url)))
+(defn stub [body & [base-url]] 
+  (admin-post "mappings/new" body base-url))
