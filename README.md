@@ -26,7 +26,7 @@ A Clojure library that wraps [wiremock](https://github.com/tomakehurst/wiremock)
 ; load http://localhost:8080/hello in a browser
 
 ; reset the mappings - handy when you want to clear state between tests
-(reset-mappings wiremock-server)
+(reset wiremock-server)
 
 ; stop the server
 (stop wiremock-server)
