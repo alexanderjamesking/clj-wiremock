@@ -37,7 +37,7 @@ You have cloned this git repo and run ```lein repl``` to start the REPL
 (stop wiremock-server)
 ```
 
-###A working example
+###A practical example
 
 See [alexanderjamesking/clj-wiremock-example](https://github.com/alexanderjamesking/clj-wiremock-example) for an example of using wiremock to test a webapp that makes a HTTP call to a stubbed server that returns JSON.
 
