@@ -25,6 +25,8 @@ You have cloned this git repo and run ```lein repl``` to start the REPL
 (start wiremock-server)
 
 ; set up a stub then refresh the __admin page to see your new mapping
+; the stub is built using a clojure map which gets converted to JSON 
+; and is posted to the wiremock API
 (stub { :request { :method "GET" :url "/hello"} 
         :response { :status 200 :body "Hello World"}})
 
@@ -41,3 +43,4 @@ You have cloned this git repo and run ```lein repl``` to start the REPL
 
 See [alexanderjamesking/clj-wiremock-example](https://github.com/alexanderjamesking/clj-wiremock-example) for an example of using wiremock to test a webapp that makes a HTTP call to a stubbed server that returns JSON.
 
+See the test sources in this project and the JSON examples on http://wiremock.org for more examples
