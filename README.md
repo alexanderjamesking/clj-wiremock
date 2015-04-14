@@ -31,3 +31,8 @@ A Clojure library that wraps [wiremock](https://github.com/tomakehurst/wiremock)
 ; stop the server
 (stop wiremock-server)
 ```
+
+###A working example
+
+See [alexanderjamesking/clj-wiremock-example](https://github.com/alexanderjamesking/clj-wiremock-example) for an example of using wiremock to test a webapp that makes a HTTP call to a stubbed server that returns JSON.
+
