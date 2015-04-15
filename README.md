@@ -126,4 +126,33 @@ See the test sources in this project and the JSON examples on http://wiremock.or
   :response { 
     :status 200 
   }})
+
+; JSON body matching
+(stub { 
+  :request { 
+    :method "POST" 
+    :url "/with/json/body"
+    :bodyPatterns [
+      { :equalToJson "{ \"houseNumber\": 4, \"postcode\": \"N1 1ZZ\" }" }
+      { :jsonCompareMode "LENIENT" }
+    ]
+  } 
+  :response { 
+    :status 200 
+  }})
+
+; JSONPath expressions
+(stub { 
+  :request { 
+    :method "POST" 
+    :url "/with/json/body"
+    :bodyPatterns [
+      { :matchesJsonPath "$.status" }
+      { :matchesJsonPath "$.things[?(@.name == 'RequiredThing')]" }
+    ]
+  } 
+  :response { 
+    :status 200 
+  }})
+
 ```
