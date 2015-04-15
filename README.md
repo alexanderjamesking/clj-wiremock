@@ -44,3 +44,86 @@ You have cloned this git repo and run ```lein repl``` to start the REPL
 See [alexanderjamesking/clj-wiremock-example](https://github.com/alexanderjamesking/clj-wiremock-example) for an example of using wiremock to test a webapp that makes a HTTP call to a stubbed server that returns JSON.
 
 See the test sources in this project and the JSON examples on http://wiremock.org for more examples
+
+###Examples as per [http://wiremock.org/stubbing.html](http://wiremock.org/stubbing.html)
+
+```clojure
+
+; Basic Stubbing
+(stub { 
+  :request { 
+    :method "GET" 
+    :url "/some/thing"
+  } 
+  :response { 
+    :status 200 
+    :body "Hello World!"
+    :headers { 
+      :Content-Type "text/plain" 
+    }
+  }})
+
+; URL Matching with urlPattern
+(stub { 
+  :request { 
+    :method "PUT" 
+    :urlPattern "/thing/matching/[0-9]+"
+  } 
+  :response { 
+    :status 200 
+  }})
+
+; URL Matching with urlPath (matches the path part of the URL only)
+(stub { 
+  :request { 
+    :method "PUT" 
+    :urlPath "/query"
+  } 
+  :response { 
+    :status 200 
+  }})
+
+
+; Request Header Matching
+(stub { 
+  :request { 
+    :method "POST" 
+    :url "/with/headers"
+    :headers {
+      :Content-Type { :equalTo "text/xml" }
+      :Accept { :matches "text/.*" }
+      :etag { :doesNotMatch "abcd.*" }
+      :X-Custom-Header { :contains "2134"}
+    }
+  } 
+  :response { 
+    :status 200 
+  }})
+
+; Query Parameter Matching
+(stub { 
+  :request { 
+    :method "GET" 
+    :url "/with/query"
+    :queryParameters {
+      :search { :contains "Some text" }
+    }
+  } 
+  :response { 
+    :status 200 
+  }})
+
+; Request Body Matching
+(stub { 
+  :request { 
+    :method "POST" 
+    :url "/with/body"
+    :bodyPatterns [
+      { :matches "<status>OK</status>" }
+      { :doesNotMatch ".*ERROR.*" }
+    ]
+  } 
+  :response { 
+    :status 200 
+  }})
+```
