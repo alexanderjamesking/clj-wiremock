@@ -18,9 +18,6 @@ You have cloned this git repo and run ```lein repl``` to start the REPL
 ; create a new server on the default port 8080
 (def wiremock-server (server))
 
-; or to use a custom port pass a config to the server
-(def wiremock-server (server (config { :port 11111 })))
-
 ; start the server - load http://localhost:8080/__admin/ in a browser to see it running
 (start wiremock-server)
 
