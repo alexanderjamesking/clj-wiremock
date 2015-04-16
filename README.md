@@ -9,8 +9,8 @@ A Clojure library that wraps [wiremock](https://github.com/tomakehurst/wiremock)
 ### Hello World in the REPL
 
 #### Prerequisites
-You have an up to date version of [leiningen](https://github.com/technomancy/leiningen)
-You have cloned this git repo and run ```lein repl``` to start the REPL
+- You have an up to date version of [leiningen](https://github.com/technomancy/leiningen)
+- You have cloned this git repo and run ```lein repl``` to start the REPL
 
 ```clojure
 (require '[clj-wiremock.core :refer :all])
