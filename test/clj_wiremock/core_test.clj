@@ -30,7 +30,7 @@
     (is (= 12345 (.portNumber c)))))
 
 (deftest http-get
-  (stub { :request { :method "GET" :url "/hello"} 
+  (stub { :request { :method "GET" :url "/hello"}
           :response { :status 200 :body "Hello World"}})
   (let [r (client/get "http://localhost:8080/hello")]
     (is (= 200 (:status r)))
@@ -46,7 +46,7 @@
     (is (= "Created" (:body r)))))
 
 (deftest test-count-requests
-  (stub { :request { :method "GET" :url "/hello"} 
+  (stub { :request { :method "GET" :url "/hello"}
           :response { :status 200 :body "Hello World"}})
   (client/get "http://localhost:8080/hello")
   (is (= 1 (count-requests { :method "GET" :url "/hello"})))
@@ -55,7 +55,7 @@
   (is (= 3 (count-requests { :method "GET" :url "/hello"}))))
 
 (deftest test-find-requests
-  (stub { :request { :method "GET" :url "/hello"} 
+  (stub { :request { :method "GET" :url "/hello"}
           :response { :status 200 :body "Hello World"}})
   (client/get "http://localhost:8080/hello")
   (let [requests (find-requests { :method "GET" :url "/hello"})

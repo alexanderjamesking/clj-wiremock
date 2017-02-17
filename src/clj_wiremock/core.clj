@@ -33,10 +33,10 @@
   [server] 
   (.stop server))
 
-(defn reset 
+(defn reset
   "Removes all stub mappings and deletes the request log"
-  [server] 
-  (.resetMappings server))
+  [server]
+  (.resetAll server))
 
 (defn- admin-post [endpoint body & [base-url]]
   (let [base-url (or base-url "http://localhost:8080")
