@@ -53,4 +53,3 @@
 
 (defn stub [body & [base-url]]
   (admin-post "mappings/new" body base-url))
-            

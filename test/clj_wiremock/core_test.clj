@@ -1,5 +1,6 @@
 (ns clj-wiremock.core-test
   (:require [clojure.test :refer [deftest use-fixtures is]]
+            [cheshire.core :refer [generate-string parse-string]]
             [clj-wiremock.core :refer [config server start stop reset stub count-requests find-requests]]
             [clj-http.client :as client]))
 
@@ -35,6 +36,16 @@
   (let [r (client/get "http://localhost:8080/hello")]
     (is (= 200 (:status r)))
     (is (= "Hello World" (:body r)))))
+
+(deftest http-get-with-json
+  (stub {:request  {:method "GET" :url "/hello"}
+              :response {:status  200
+                         :body    (generate-string {:some "json"})
+                         :headers {:Content-Type "application/json"}
+                         }})
+  (let [r (client/get "http://localhost:8080/hello")]
+    (is (= 200 (:status r)))
+    (is (= {:some "json"} (parse-string (:body r) true)))))
 
 (deftest http-post
   (stub {:request  {:method       "POST"
