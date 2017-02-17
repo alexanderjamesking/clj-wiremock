@@ -20,7 +20,7 @@
 
 (defn server 
   "Create a new instance of WireMockServer"
-  ([] (new WireMockServer))
+  ([] (new WireMockServer (config)))
   ([config] (new WireMockServer config)))
 
 (defn start 
