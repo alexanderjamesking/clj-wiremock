@@ -5,5 +5,5 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [com.github.tomakehurst/wiremock "2.5.1"]
-                 [cheshire "5.4.0"]
+                 [cheshire "5.7.0"]
                  [clj-http "3.4.1"]])
