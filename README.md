@@ -1,4 +1,4 @@
-# clj-wiremock 
+# clj-wiremock [no longer under development]
 
 *This library is no longer under development and I do not suggest you use it, it is a minimal wrapper so you could copy the core functions from here into your own code and use wiremock directly - then you can control your own wiremock and apache http dependencies!*
 
